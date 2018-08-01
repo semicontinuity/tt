@@ -1,6 +1,7 @@
 from picotui.basewidget import FocusableWidget, ACTION_CANCEL
 from picotui.defs import *
 from picotui.screen import Screen
+from picotui.editor import Editor
 
 P_FIRST = 0
 P_NONE  = 1
@@ -87,18 +88,14 @@ def draw_grid(left, top, w, h, top_kind, bottom_kind, left_kind, right_kind, h_s
     draw_line(P_LAST, top + h - 1, bottom_kind)
 
 
-class WGrid(FocusableWidget):
-    def __init__(self, w, h, column_names, column_widths):
-        super().__init__()
-        self.x = 0
-        self.y = 0
-        self.w = w
-        self.h = h
+class WGrid(Editor):
+    def __init__(self, width, height, column_names, column_widths):
+        super().__init__(0, 0, width, height)
         self.column_names = column_names
         self.column_widths = column_widths
         self.column_positions = self.compute_column_positions_except_first()
         self.h_stops = [(x, KIND_SINGLE) for x in self.column_positions]
-        self.column_widths[0] = self.column_positions[0] - 1 if len(self.column_names) > 1 else w - 2
+        self.column_widths[0] = self.column_positions[0] - 1 if len(self.column_names) > 1 else width - 2
         self.column_positions.insert(0, 1)
 
     def compute_column_positions_except_first(self):
@@ -106,7 +103,7 @@ class WGrid(FocusableWidget):
         The first column occupies the remaining size, its specified size is ignored
         """
         i = len(self.column_widths) - 1
-        x = self.w
+        x = self.width
         column_positions = []
         while i > 0:
             x = x - 1 - self.column_widths[i]
@@ -119,7 +116,7 @@ class WGrid(FocusableWidget):
         self.cursor(False)
         self.attr_color(C_B_CYAN, C_BLUE)
         draw_grid(
-            self.x, self.y, self.w, self.h,
+            self.x, self.y, self.width, self.height,
             KIND_DOUBLE, KIND_DOUBLE, KIND_DOUBLE, KIND_DOUBLE,
             self.h_stops, []
         )
