@@ -94,12 +94,14 @@ class WGrid(FocusableWidget):
         self.y = 0
         self.w = w
         self.h = h
+        self.column_names = column_names
         self.column_widths = column_widths
-        self.column_positions = self.compute_column_positions()
+        self.column_positions = self.compute_column_positions_except_first()
         self.h_stops = [(x, KIND_SINGLE) for x in self.column_positions]
+        self.column_widths[0] = self.column_positions[0] - 1 if len(self.column_names) > 1 else w - 2
         self.column_positions.insert(0, 1)
 
-    def compute_column_positions(self):
+    def compute_column_positions_except_first(self):
         """
         The first column occupies the remaining size, its specified size is ignored
         """
@@ -121,6 +123,17 @@ class WGrid(FocusableWidget):
             KIND_DOUBLE, KIND_DOUBLE, KIND_DOUBLE, KIND_DOUBLE,
             self.h_stops, []
         )
+
+        self.attr_color(C_B_YELLOW, C_BLUE)
+        i = 0
+        while i < len(self.column_positions):
+            column_width = self.column_widths[i]
+            column_text = self.column_names[i]
+            text_len = len(column_text)
+            used_text_len = min(text_len, column_width)
+            self.goto(self.x + self.column_positions[i] + (column_width - used_text_len)/2, self.y + 1)
+            self.wr_fixedw(column_text, used_text_len)
+            i += 1
 
     def handle_mouse(self, x, y):
         pass
