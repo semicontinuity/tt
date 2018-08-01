@@ -88,12 +88,30 @@ def draw_grid(left, top, w, h, top_kind, bottom_kind, left_kind, right_kind, h_s
 
 
 class WGrid(FocusableWidget):
-    def __init__(self, w, h, column_widths=None):
+    def __init__(self, w, h, column_names, column_widths):
         super().__init__()
         self.x = 0
         self.y = 0
         self.w = w
         self.h = h
+        self.column_widths = column_widths
+        self.column_positions = self.compute_column_positions()
+        self.h_stops = [(x, KIND_SINGLE) for x in self.column_positions]
+        self.column_positions.insert(0, 1)
+
+    def compute_column_positions(self):
+        """
+        The first column occupies the remaining size, its specified size is ignored
+        """
+        i = len(self.column_widths) - 1
+        x = self.w
+        column_positions = []
+        while i > 0:
+            x = x - 1 - self.column_widths[i]
+            column_positions.append(x)
+            i -= 1
+        column_positions.reverse()
+        return column_positions
 
     def redraw(self):
         self.cursor(False)
@@ -101,7 +119,7 @@ class WGrid(FocusableWidget):
         draw_grid(
             self.x, self.y, self.w, self.h,
             KIND_DOUBLE, KIND_DOUBLE, KIND_DOUBLE, KIND_DOUBLE,
-            [(10, KIND_DOUBLE), (15, KIND_DOUBLE)], [(3, KIND_DOUBLE), (5, KIND_SINGLE)]
+            self.h_stops, []
         )
 
     def handle_mouse(self, x, y):
