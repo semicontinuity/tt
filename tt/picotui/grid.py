@@ -103,7 +103,7 @@ class WGrid(Editor):
         The first column occupies the remaining size, its specified size is ignored
         """
         i = len(self.column_widths) - 1
-        x = self.width
+        x = self.width - 1
         column_positions = []
         while i > 0:
             x = x - 1 - self.column_widths[i]
@@ -122,15 +122,45 @@ class WGrid(Editor):
         )
 
         self.attr_color(C_B_YELLOW, C_BLUE)
+        self.redraw_column_headers()
+        self.redraw_content()
+
+    def redraw_column_headers(self):
         i = 0
         while i < len(self.column_positions):
             column_width = self.column_widths[i]
             column_text = self.column_names[i]
             text_len = len(column_text)
             used_text_len = min(text_len, column_width)
-            self.goto(self.x + self.column_positions[i] + (column_width - used_text_len)/2, self.y + 1)
+            self.goto(self.x + self.column_positions[i] + (column_width - used_text_len) / 2, self.y + 1)
             self.wr_fixedw(column_text, used_text_len)
             i += 1
+
+    def redraw_content(self):
+        i = self.top_line
+        r = self.y + 1
+        for c in range(self.height - 2):
+            self.goto(self.x + 1, r)
+            if i >= self.total_lines:
+                self.show_line(None, i)
+            else:
+                self.show_line(self.content[i], i)
+            i += 1
+            r += 1
+
+    def show_line(self, l, i):
+        is_highlighted = self.cur_line == i
+        if is_highlighted:
+            self.attr_color(C_BLACK, C_CYAN)
+        else:
+            self.attr_color(C_B_CYAN, C_BLUE)
+        for c in range(len(self.column_names)):
+            if c > 0:
+                self.wr(b'\xe2\x94\x82')    # |
+            if l:
+                self.wr_fixedw(l[c], self.column_widths[c])
+            else:
+                self.wr(' ' * self.column_widths[c])
 
     def handle_mouse(self, x, y):
         pass
