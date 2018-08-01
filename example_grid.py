@@ -11,7 +11,13 @@ if __name__ == "__main__":
 
         screen_size = Screen.screen_size()
         g = WGrid(screen_size[0], screen_size[1], ["id", "time"], [0, 10])
-        g.set_lines([("hello", "world"), ("hello", "again and again")])
+        g.set_lines([
+            ("hello", "0 world"),
+            ("hello", "1 again and again"),
+            ("a", "2"),
+            ("b", "3"),
+            ("c", "4")
+        ])
 
         res = g.loop()
     finally:

@@ -1,7 +1,6 @@
-from picotui.basewidget import FocusableWidget, ACTION_CANCEL
 from picotui.defs import *
-from picotui.screen import Screen
 from picotui.editor import Editor
+from picotui.screen import Screen
 
 P_FIRST = 0
 P_NONE  = 1
@@ -165,13 +164,27 @@ class WGrid(Editor):
     def handle_mouse(self, x, y):
         pass
 
-    def handle_key(self, key):
-        if key == KEY_QUIT:
+    def handle_cursor_keys(self, key):
+        if not self.total_lines:
+            return
+        if key == KEY_DOWN:
+            if self.cur_line + 1 != self.total_lines:
+                self.cur_line += 1
+                if self.cur_line == self.top_line + self.height - 2:
+                    self.top_line += 1
+                self.redraw()
+        elif key == KEY_UP:
+            if self.cur_line > 0:
+                self.cur_line -= 1
+                if self.cur_line < self.top_line:
+                    self.top_line = self.cur_line
+                self.redraw()
+        else:
+            return False
+        return True
+
+    def handle_edit_key(self, key):
+        if key == KEY_ENTER:
             return key
         elif key == KEY_ESC:
-            return ACTION_CANCEL
-        elif key == KEY_ENTER:
-            self.signal("enter")
-
-    def on_enter(self):
-        pass
+            return key
