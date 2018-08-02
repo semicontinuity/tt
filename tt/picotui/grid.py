@@ -44,6 +44,22 @@ CHARS = [
 ]
 
 
+def screen_alt():
+    Screen.wr(b"\x1b[?47h")
+
+
+def screen_regular():
+    Screen.wr(b"\x1b[?47l")
+
+
+def cursor_position_save():
+    Screen.wr(b"\x1b7")
+
+
+def cursor_position_restore():
+    Screen.wr(b"\x1b8")
+
+
 def draw_grid(left, top, w, h, top_kind, bottom_kind, left_kind, right_kind, h_stops, v_stops):
     def draw_line(v_pos, y, current_h_kind):
         Screen.goto(left, y)
