@@ -104,8 +104,9 @@ def draw_grid(left, top, w, h, top_kind, bottom_kind, left_kind, right_kind, h_s
 
 
 class WGrid(Editor):
-    def __init__(self, width, height, column_names, column_widths):
+    def __init__(self, title, width, height, column_names, column_widths):
         super().__init__(0, 0, width, height)
+        self.title = title
         self.column_names = column_names
         self.column_widths = column_widths
         self.column_positions = self.compute_column_positions_except_first()
@@ -136,10 +137,20 @@ class WGrid(Editor):
             self.h_stops, []
         )
 
+        self.attr_color(C_BLACK, C_CYAN)
+        self.redraw_title()
+
         self.attr_color(C_B_YELLOW, C_BLUE)
         self.redraw_column_headers()
+
         self.redraw_content()
 
+    def redraw_title(self):
+        max_width = self.width - 4
+        used_width = min(max_width, len(self.title) + 2)
+        self.goto(self.x + (self.width - used_width) / 2, self.y)
+        self.wr_fixedw(' ' + self.title + ' ', used_width)
+        
     def redraw_column_headers(self):
         i = 0
         while i < len(self.column_positions):
