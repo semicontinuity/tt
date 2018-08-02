@@ -153,8 +153,8 @@ class WGrid(Editor):
 
     def redraw_content(self):
         i = self.top_line
-        r = self.y + 1
-        for c in range(self.height - 2):
+        r = self.y + 2  # skip border, headers
+        for c in range(self.height - 3):
             self.goto(self.x + 1, r)
             if i >= self.total_lines:
                 self.show_line(None, i)
