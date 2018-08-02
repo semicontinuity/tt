@@ -9,11 +9,13 @@ from tt.picotui.grid import WGrid, screen_alt, screen_regular, cursor_position_s
 # arguments:
 # argument 1: header
 # argument 2: grid data in json format [[c1, c2 .. cN], ... [c1, c2 .. cN]]
-# arguments 3+: column titles
+# argument 3: column titles in json format ['name1', 'name2', ...]
+# argument 4: column widths in json format [w1, w2, ...]
 # prints result to STDERR (cannot use STDOUT)
 title = sys.argv[1]
 data = json.loads(sys.argv[2])
-column_titles = sys.argv[3:]
+column_titles = json.loads(sys.argv[3])
+column_widths = json.loads(sys.argv[4])
 
 if __name__ == "__main__":
     s = Screen()
@@ -26,7 +28,7 @@ if __name__ == "__main__":
         s.attr_reset()
 
         screen_size = Screen.screen_size()
-        g = WGrid(title, screen_size[0], screen_size[1], column_titles, [0, 10])
+        g = WGrid(title, screen_size[0], screen_size[1], column_titles, column_widths)
         g.set_lines(data)
 
         res = g.loop()

@@ -24,7 +24,7 @@ if __name__ == "__main__":
         ])
 
         res = g.loop()
-        sys.exit(g.cur_line if res == KEY_ENTER else 63)
+        sys.exit(g.cur_line if res == KEY_ENTER else 128)
     finally:
         s.attr_reset()
         s.cls()
